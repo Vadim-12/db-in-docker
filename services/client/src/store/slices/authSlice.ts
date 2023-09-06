@@ -3,6 +3,7 @@ import {
 	AuthState,
 	SetError,
 	SetIsAuth,
+	SetIsLoading,
 	SetUser,
 } from '../../types/store/auth';
 import { IUser } from '../../types/models/IUser';
@@ -71,7 +72,7 @@ export const checkAuthUser = createAsyncThunk(
 const initialState: AuthState = {
 	user: {} as IUser,
 	isAuth: false,
-	isLoading: false,
+	isLoading: localStorage.getItem('token') !== null,
 };
 
 const authSlice = createSlice({
@@ -87,79 +88,80 @@ const authSlice = createSlice({
 		setError: (state: AuthState, action: PayloadAction<SetError>) => {
 			state.error = action.payload;
 		},
+		setIsLoading: (state: AuthState, action: PayloadAction<SetIsLoading>) => {
+			state.isLoading = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(loginUser.pending, (state) => {
-				console.log('login pending');
 				state.isLoading = true;
+				console.log('login pending');
 			})
 			.addCase(loginUser.fulfilled, (state, action) => {
-				console.log('login fulfilled');
 				state.isAuth = true;
 				state.user = action.payload;
 				state.error = '';
 				state.isLoading = false;
+				console.log('login fulfilled');
 			})
 			.addCase(loginUser.rejected, (state, action) => {
-				console.log('login rejected');
-				console.log(action.error);
-				state.error = action.error.message;
+				state.error = (action.payload as any).response.data.message;
 				state.isLoading = false;
+				state.isAuth = false;
+				console.log('login rejected');
 			})
 			.addCase(registrationUser.pending, (state) => {
-				console.log('registration pending');
 				state.isLoading = true;
+				console.log('registration pending');
 			})
 			.addCase(registrationUser.fulfilled, (state, action) => {
-				console.log('registration fulfilled');
 				state.isAuth = true;
 				state.user = action.payload;
 				state.error = '';
 				state.isLoading = false;
+				console.log('registration fulfilled');
 			})
 			.addCase(registrationUser.rejected, (state, action) => {
-				console.log('registration rejected');
-				console.log(action.error);
-				state.error = action.error.message;
+				state.error = (action.payload as any).response.data.message;
 				state.isLoading = false;
+				state.isAuth = false;
+				console.log('registration rejected');
 			})
 			.addCase(logoutUser.pending, (state) => {
-				console.log('logout pending');
 				state.isLoading = true;
+				console.log('logout pending');
 			})
 			.addCase(logoutUser.fulfilled, (state, _) => {
-				console.log('logout fulfilled');
 				state.isAuth = false;
 				state.user = {} as IUser;
 				state.error = '';
 				state.isLoading = false;
+				console.log('logout fulfilled');
 			})
 			.addCase(logoutUser.rejected, (state, action) => {
-				console.log('logout rejected');
-				console.log(action.error);
-				state.error = action.error.message;
+				state.error = (action.payload as any).response.data.message;
 				state.isLoading = false;
+				console.log('logout rejected');
 			})
 			.addCase(checkAuthUser.pending, (state) => {
-				console.log('refresh pending');
 				state.isLoading = true;
+				console.log('checkAuth pending');
 			})
 			.addCase(checkAuthUser.fulfilled, (state, action) => {
-				console.log('refresh fulfilled');
 				state.isAuth = true;
 				state.user = action.payload;
 				state.error = '';
 				state.isLoading = false;
+				console.log('checkAuth fulfilled');
 			})
 			.addCase(checkAuthUser.rejected, (state, action) => {
-				console.log('refresh rejected');
-				console.log(action.error);
-				state.error = action.error.message;
+				state.error = (action.payload as any).response.data.message;
 				state.isLoading = false;
+				console.log('checkAuth rejected');
 			});
 	},
 });
 
-export const { setIsAuth, setUser, setError } = authSlice.actions;
+export const { setIsAuth, setUser, setError, setIsLoading } = authSlice.actions;
 export default authSlice;

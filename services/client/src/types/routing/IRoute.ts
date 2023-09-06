@@ -1,11 +1,17 @@
-import React from 'react';
+import { ReactChild, ReactFragment, ReactPortal } from 'react';
 
 interface IRoute {
 	path: string;
 	name: string;
-	component: React.FC;
-	inPublicRoutes: boolean;
-	inPrivateRoutes: boolean;
+	component?:
+		| ReactChild
+		| ReactFragment
+		| ReactPortal
+		| boolean
+		| null
+		| undefined;
+	isPublicRoute: boolean;
+	isAuthRoute: boolean;
 	inMenu: boolean;
 }
 

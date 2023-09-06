@@ -6,6 +6,7 @@ import { validateLogin, validatePassword } from '../utils/validation';
 import { registrationUser, setError } from '../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import MainLayout from '../components/MainLayout';
+import { MAIN_PAGE_ROUTE } from '../config/routes/client/private';
 
 const RegistrationPage: React.FC = () => {
 	const [login, setLogin] = useState<string>('');
@@ -36,7 +37,7 @@ const RegistrationPage: React.FC = () => {
 			}
 
 			dispatch(registrationUser({ login, password }));
-			navigate('/');
+			navigate(MAIN_PAGE_ROUTE);
 		},
 		[login, password, repeatPassword]
 	);

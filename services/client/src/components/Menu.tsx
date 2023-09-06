@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { allRoutes } from '../config/routes';
 import { useAppSelector } from '../hooks/store';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -7,25 +7,27 @@ const Menu: React.FC = () => {
 	const isAuth = useAppSelector((state) => state.auth.isAuth);
 	const location = useLocation();
 
-	return (
-		<nav className='menu'>
-			{allRoutes.map((route) =>
-				route.inMenu &&
-				((!isAuth && route.inPublicRoutes) ||
-					(isAuth && route.inPrivateRoutes)) ? (
-					<NavLink
-						key={route.path}
-						className={`menu__link${
-							route.path === location.pathname ? ' currentLink' : ''
-						}`}
-						to={route.path}
-					>
-						{route.name}
-					</NavLink>
-				) : null
-			)}
-		</nav>
+	const allowedLinks = useMemo(
+		() =>
+			allRoutes.map(
+				({ inMenu, isAuthRoute, isPublicRoute, path, name }) =>
+					inMenu &&
+					((isPublicRoute && !isAuth) || (isAuthRoute && isAuth)) && (
+						<NavLink
+							key={path}
+							className={`menu__link${
+								path === location.pathname ? ' currentLink' : ''
+							}`}
+							to={path}
+						>
+							{name}
+						</NavLink>
+					)
+			),
+		[isAuth, allRoutes, location]
 	);
+
+	return <nav className='menu'>{allowedLinks}</nav>;
 };
 
 export default Menu;

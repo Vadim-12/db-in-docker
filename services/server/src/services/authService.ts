@@ -27,7 +27,6 @@ class AuthService {
 
 	async login(login: string, password: string) {
 		const user = await UserModel.findOne({ where: { login } });
-		console.log(user);
 		if (!user) {
 			throw ApiError.BadRequest(`Пользователь с логином ${login} не найден`);
 		}
@@ -57,14 +56,10 @@ class AuthService {
 		const userData = tokenService.validateRefreshToken(
 			refreshToken
 		) as UserModel;
-
-		console.log(refreshToken);
-		const tokenFromDb = await tokenService.findToken(refreshToken); // не может найтись токен пользователя
-
-		console.log('tokenFromDb', tokenFromDb); // null
+		const tokenFromDb = await tokenService.findToken(refreshToken);
 
 		if (!userData || !tokenFromDb) {
-			throw ApiError.UnauthorizedError(); // здесь выбрасывается ошибка неавторизованного пользователя
+			throw ApiError.UnauthorizedError();
 		}
 
 		const user = await UserModel.findOne({ where: { login: userData.login } });
@@ -75,9 +70,8 @@ class AuthService {
 			throw ApiError.BadRequest('Владельца токена не найдено');
 		}
 
-		await tokenService.saveToken(user.login, tokens.refreshToken);
-		console.log('------------');
-		return { tokens, ...user };
+		await tokenService.saveToken(userDto.login, tokens.refreshToken);
+		return { ...tokens, user: userDto };
 	}
 }
 

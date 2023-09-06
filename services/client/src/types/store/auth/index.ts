@@ -12,3 +12,5 @@ export type SetIsAuth = boolean;
 export type SetUser = IUser;
 
 export type SetError = string;
+
+export type SetIsLoading = boolean;

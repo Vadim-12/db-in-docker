@@ -16,10 +16,17 @@ a {
 	color: $mainColor;
 }
 header {
-	padding: 1.5em 2em;
+	//padding: 1.5em 2em;
+	padding: 0 2em;
+	height: 75px;
 	background: grey;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
 
 	.menu {
 		display: flex;
@@ -38,6 +45,21 @@ header {
 			}
 		}
 	}
+	.exit-btn {
+		background: $mainColor;
+		color: white;
+		width: 80px;
+		height: 38px;
+
+		&:hover {
+			opacity: 0.6;
+			background: $mainColor;
+			transition: 0.4s;
+		}
+	}
+}
+main {
+	margin-top: 7em;
 }
 .auth-form {
 	border: 2px solid gray;

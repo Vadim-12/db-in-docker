@@ -1,11 +1,12 @@
 import { Box, Button, TextField } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { REGISTRATION_PAGE_ROUTE } from '../config/routes/client/public/auth/registration';
 import { validateLogin, validatePassword } from '../utils/validation';
 import { loginUser, setError } from '../store/slices/authSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/store';
 import MainLayout from '../components/MainLayout';
+import { MAIN_PAGE_ROUTE } from '../config/routes/client/private';
 
 const LoginPage: React.FC = () => {
 	const [login, setLogin] = useState<string>('');
@@ -16,6 +17,11 @@ const LoginPage: React.FC = () => {
 	const navigate = useNavigate();
 
 	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		setLogin(localStorage.getItem('login') || '');
+		setPassword(localStorage.getItem('password') || '');
+	}, []);
 
 	const onSubmit = useCallback(
 		async (e: React.FormEvent<HTMLElement>) => {
@@ -29,9 +35,13 @@ const LoginPage: React.FC = () => {
 				dispatch(setError(validatePassword(password)));
 				return;
 			}
+			localStorage.setItem('login', login);
+			localStorage.setItem('password', password);
 
-			dispatch(loginUser({ login, password }));
-			navigate('/');
+			const loginResponse = await dispatch(loginUser({ login, password }));
+			if (loginResponse.meta.requestStatus === 'fulfilled') {
+				navigate(MAIN_PAGE_ROUTE);
+			}
 		},
 		[login, password]
 	);

@@ -39,8 +39,6 @@ class TokenService {
 		});
 
 		if (tokenData) {
-			console.log('saveToken:', tokenData);
-			console.log('new token:', refreshToken);
 			tokenData.refreshToken = refreshToken;
 			await tokenData.save();
 			return tokenData;

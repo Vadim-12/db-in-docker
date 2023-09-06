@@ -1,1 +1,1 @@
-export const REGISTRATION_PAGE_ROUTE = `/auth/registration`;
+export const REGISTRATION_PAGE_ROUTE = '/auth/registration';
